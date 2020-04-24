@@ -55,15 +55,15 @@ class DBWNode(object):
 
         # TODO: Create `Controller` object
         self.controller = Controller(vehicle_mass=vehicle_mass,
-            fuel_capacity=fuel_capacity,
-            brake_deadband=brake_deadband,
-            decel_limit=decel_limit,
-            accel_limit=accel_limit,
-            wheel_radius=wheel_radius,
-            wheel_base=wheel_base,
-            steer_ratio=steer_ratio,
-            max_lat_accel=max_lat_accel,
-            max_steer_angle=max_steer_angle)
+                                     fuel_capacity=fuel_capacity,
+                                     brake_deadband=brake_deadband,
+                                     decel_limit=decel_limit,
+                                     accel_limit=accel_limit,
+                                     wheel_radius=wheel_radius,
+                                     wheel_base=wheel_base,
+                                     steer_ratio=steer_ratio,
+                                     max_lat_accel=max_lat_accel,
+                                     max_steer_angle=max_steer_angle)
 
         # TODO: Subscribe to all the topics you need to
         rospy.Subscriber('/vehicle/dbw_enabled', Bool, self.dbw_enabled_cb)
@@ -80,20 +80,18 @@ class DBWNode(object):
         self.loop()
 
     def loop(self):
-        # Carla expects 50 Hz for DBW
         rate = rospy.Rate(50) # 50Hz
         while not rospy.is_shutdown():
             # TODO: Get predicted throttle, brake, and steering using `twist_controller`
             # You should only publish the control commands if dbw is enabled
             if not None in (self.current_vel, self.linear_vel, self.angular_vel):
                 self.throttle, self.brake, self.steering = self.controller.control(self.current_vel,
-                                                                                   self.dbw_enabled, 
-                                                                                   self.linear_vel, 
+                                                                                   self.dbw_enabled,
+                                                                                   self.linear_vel,
                                                                                    self.angular_vel)
 
             if self.dbw_enabled:
                 self.publish(self.throttle, self.brake, self.steering)
-                # self.publish(1, 0, 0)  # just want the car drive forward
             rate.sleep()
 
     def dbw_enabled_cb(self, msg):
